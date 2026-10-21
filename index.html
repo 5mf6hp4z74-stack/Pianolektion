@@ -1,0 +1,577 @@
+<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#151422"><title>Pianolektion B30</title><link rel="manifest" href="manifest.webmanifest"><style>
+*{box-sizing:border-box}body{margin:0;background:#161323;color:#fff;font-family:system-ui,-apple-system,sans-serif}button,input{font:inherit}button{cursor:pointer;color:white;background:#252035c9;border:1px solid #ffffff4a;border-radius:13px;padding:11px 13px}button:disabled{opacity:.35}button.primary{background:#ffc48d;color:#241827;font-weight:750}main{min-height:100dvh;position:relative;isolation:isolate;padding:16px;overflow:hidden}.back{position:absolute;inset:0;z-index:-2;background-image:linear-gradient(#0809146b,#090918a3),url('pianorum.jpg');background-position:center;background-size:cover}.layout{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:16px;max-width:1150px;margin:auto}.panel{background:#10111f9c;backdrop-filter:blur(9px);border:1px solid #ffffff35;border-radius:19px;padding:16px}.header{font-size:24px;font-weight:800;margin-bottom:14px}.small{font-size:12px;color:#dfd5e1}.parts{display:grid;gap:8px;margin:12px 0}.part{display:flex;text-align:left;align-items:center;gap:10px;width:100%;background:#ffffff12}.part.active{outline:2px solid var(--accent)}.dot{width:9px;height:33px;border-radius:8px}.part strong{display:block}.controls{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}.dial{width:min(74vw,470px);aspect-ratio:1;position:relative;margin:15px auto;border-radius:50%;isolation:isolate}.dial::before{content:"";position:absolute;inset:7%;border-radius:50%;background-image:linear-gradient(#090c1860,#090c1860),var(--custom-photo,url("pianorum.jpg"));background-size:auto 115vh;background-position:center;z-index:-1}.dial .shade{position:absolute;inset:7%;border-radius:50%;background:#080c1cdb;mask-image:conic-gradient(transparent 0deg var(--angle,0deg),black var(--angle,0deg) 360deg);-webkit-mask-image:conic-gradient(transparent 0deg var(--angle,0deg),black var(--angle,0deg) 360deg)}.dial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);filter:drop-shadow(0 0 9px #fff5)}.dial .numbers{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;text-shadow:0 2px 10px #000,0 0 20px #000;pointer-events:none}.time{font-size:clamp(43px,9vw,84px);font-weight:800;font-variant-numeric:tabular-nums}.field{display:grid;grid-template-columns:1fr 100px;gap:8px;margin:9px 0;align-items:center}input{min-width:0;width:100%;background:#171626;border:1px solid #ffffff66;border-radius:8px;color:white;padding:8px}.hidden{display:none!important}.fire{position:fixed;inset:0;pointer-events:none;z-index:9}.spark{position:absolute;left:var(--x);top:var(--y);width:6px;height:6px;border-radius:50%;background:var(--c);box-shadow:0 0 12px var(--c);animation:burst 1.5s ease-out both;animation-delay:var(--delay)}@keyframes burst{0%{opacity:0;transform:translate(0,0) scale(.2)}15%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2)}}.focus .sidebar{display:none}.focus .layout{display:block;max-width:850px}.focus .timerpanel{background:#0b0b1933}.focus .dial{width:min(84vw,620px)}@media(max-width:720px){.layout{display:flex;flex-direction:column}.timerpanel{order:0}.sidebar{order:1}.dial{width:min(78vw,430px)}.header{font-size:21px}}
+
+/* B5: portrait timer-first layout, landscape automatic focus */
+.timerpanel{position:relative;background:#10111f6b;backdrop-filter:blur(5px)}
+.timerpanel .dial{width:min(78vw,470px)}
+@media(max-width:720px){main{padding:10px}.layout{gap:12px}.timerpanel{padding:13px}.timerpanel .dial{width:min(86vw,430px)}.sidebar{padding:15px}.controls button{padding:10px}}
+@media(orientation:landscape) and (max-height:600px){
+ main{padding:4px 8px;min-height:100dvh}
+ .layout{display:block;max-width:none;height:calc(100dvh - 8px)}
+ .sidebar{display:none!important}
+ .timerpanel{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;border:0;background:transparent;backdrop-filter:none;padding:0}
+ .timerpanel>div:first-child{position:absolute;top:5px;left:10px;right:10px;z-index:2}
+ .timerpanel .dial{width:min(70vh,48vw,460px);margin:0 auto}
+ .timerpanel .time{font-size:clamp(34px,12vh,74px)}
+ .timerpanel .controls{position:absolute;bottom:4px;left:0;right:0;gap:12px}
+ .timerpanel .controls button{padding:7px 13px;font-size:13px;background:#171626bc}
+ .timerpanel .controls:last-child{display:none}
+ .timerpanel #status{position:absolute;right:14px;top:28px;font-size:11px}
+ .timerpanel #focus{display:none}
+ .timerpanel #name{font-size:13px}
+ .dial .numbers .small{font-size:11px}
+}
+@media(orientation:landscape) and (max-height:600px) and (max-width:800px){.timerpanel .dial{width:min(70vh,50vw)}.timerpanel .controls button{padding:6px 10px}}
+
+/* B6 – photograph across full viewport; glass interface floats over it */
+main{min-height:100dvh;background:transparent}
+.back{position:fixed;inset:0;z-index:-2;background-image:linear-gradient(90deg,#100c192b,#120c1a10),url('pianorum.jpg');background-size:cover;background-position:center;filter:none}
+.layout{max-width:1450px;grid-template-columns:minmax(245px,330px) minmax(0,1fr);align-items:center;min-height:calc(100dvh - 32px)}
+.sidebar{background:#130f1bd9;backdrop-filter:blur(15px);box-shadow:0 12px 45px #0006}
+.timerpanel{border:0!important;box-shadow:none!important;background:transparent!important;backdrop-filter:none!important}
+.timerpanel .dial{width:min(69vw,660px);max-height:76dvh;max-width:76dvh}
+.dial::before{inset:7%;background-image:var(--custom-photo,url('pianorum.jpg'));background-size:cover;background-position:center;opacity:1}
+.dial .shade{inset:7%;background:#070916d9}
+.dial svg{filter:drop-shadow(0 0 7px #ffffff6b)}
+.dial .numbers{z-index:2;text-shadow:0 2px 8px #000,0 0 22px #000}
+.dial .numbers .time{font-weight:760}
+.timerpanel .controls button{background:#16101cbd;backdrop-filter:blur(10px);box-shadow:0 5px 16px #0004}
+.timerpanel .controls .primary{background:#ffc48d;color:#241827}
+.part{background:#ffffff0d}.part.active{background:#ffc48d18}
+@media(max-width:720px){
+ main{padding:8px}.layout{min-height:calc(100dvh - 16px);gap:8px}
+ .timerpanel{padding:6px!important}.timerpanel .dial{width:min(94vw,470px);max-height:none;max-width:none;margin:4px auto}
+ .timerpanel .controls button{font-size:13px;padding:9px 11px}
+ .sidebar{padding:14px;background:#110d1cdb}
+ .header{margin-bottom:8px}
+}
+@media(orientation:landscape) and (max-height:600px){
+ .layout{height:calc(100dvh - 8px);min-height:0}
+ .timerpanel .dial{width:min(79vh,54vw,520px);max-height:none;max-width:none}
+ .timerpanel .controls{bottom:1px}
+ .timerpanel .controls button{font-size:12px;padding:6px 12px}
+ .timerpanel .numbers .time{font-size:clamp(33px,12vh,76px)}
+}
+
+/* B7: continuous photograph, translucent floral ring, warm reveal edge */
+.dial::before{display:none!important}
+.dial .shade{inset:7%;background:rgba(6,8,20,.80);z-index:0}
+.dial .numbers{z-index:4}
+.dial svg{z-index:3}
+.dial .glow-edge{position:absolute;inset:7%;border-radius:50%;z-index:2;pointer-events:none;background:conic-gradient(from -90deg,transparent 0deg calc(var(--angle-num,0)*1deg - 1.1deg),#fff4bbdb calc(var(--angle-num,0)*1deg),#ffc27455 calc(var(--angle-num,0)*1deg + 1.7deg),transparent calc(var(--angle-num,0)*1deg + 3deg));mask-image:radial-gradient(circle,transparent 0 44%,#0008 65%,transparent 80%);-webkit-mask-image:radial-gradient(circle,transparent 0 44%,#0008 65%,transparent 80%);filter:drop-shadow(0 0 8px #ffc97d)}
+.dial .floral{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:visible}
+.dial .floral span{position:absolute;left:50%;top:50%;font-size:clamp(11px,1.65vw,22px);opacity:.77;text-shadow:0 0 8px currentColor;transform:translate(-50%,-50%) rotate(var(--rot)) translateY(calc(var(--radius) * -1)) rotate(calc(-1 * var(--rot)));}
+.timerpanel{overflow:visible!important}
+@media(max-width:720px){.dial .floral span{font-size:clamp(10px,3.3vw,17px)}.timerpanel .controls{gap:6px}.timerpanel .controls button{padding:9px 8px;font-size:12px}}
+@media(orientation:landscape) and (max-height:600px){.timerpanel .controls button{padding:6px 9px}}
+
+/* B8: one continuous sharp photograph across viewport and transparent timer */
+.back{background-image:url('pianorum.jpg?v=8')!important;background-position:center center!important;background-size:cover!important;filter:none!important}
+.dial{isolation:auto!important}
+.dial::before{display:none!important}
+.dial .shade{inset:7%;background:rgba(5,7,17,.77);z-index:1}
+.dial .glow-edge{z-index:2}
+.dial svg,.dial .floral{z-index:3}
+.dial .numbers{z-index:4}
+.timerpanel{background:transparent!important;backdrop-filter:none!important}
+.dial .floral span{opacity:.95;text-shadow:0 0 6px currentColor,0 0 12px currentColor}
+.dial svg{filter:drop-shadow(0 0 5px #ffdeb875)}
+@media(max-width:720px){.timerpanel .dial{width:min(91vw,470px)}.timerpanel .controls button{font-size:12px}}
+@media(orientation:landscape) and (max-height:600px){.timerpanel .dial{width:min(76vh,52vw,510px)}}
+
+/* B9: original clean high resolution background, no decorative flowers in ring */
+.back{background-image:url('pianorum.jpg')!important;background-color:#15101b!important;background-position:center center!important;background-size:cover!important;filter:none!important}
+.dial .shade{background:rgba(6,8,19,.76)!important;inset:7%;}
+.dial .floral{display:none!important}
+.dial svg{filter:drop-shadow(0 0 6px #ffddaa77)!important}
+.dial .glow-edge{opacity:.75}
+@media(max-width:720px){.back{background-position:60% center!important}.timerpanel .dial{width:min(91vw,470px)}}
+@media(orientation:landscape) and (max-height:600px){.back{background-position:center center!important}.timerpanel .dial{width:min(76vh,52vw,510px)}}
+
+/* B11: optically clear glass. No frosted backdrop, floral decoration, or reveal edge. */
+.dial .glow-edge,.dial .floral,#progress{display:none!important}
+.dial svg{filter:drop-shadow(0 0 3px #fff4)!important}
+.dial .shade{background:rgba(5,7,19,.70)!important}
+.dial svg #segments{filter:drop-shadow(0 0 2px #fff4)}
+.dial::after{content:"";position:absolute;inset:3.9%;border-radius:50%;pointer-events:none;z-index:3;border:1px solid rgba(255,255,255,.075);box-shadow:inset 0 1px 1px #ffffff0b}
+
+/* B11: individual clear glass arcs; no full-circumference white rings */
+.dial::after{display:none!important}
+.dial svg{filter:none!important;overflow:visible}
+.dial svg #segments{filter:drop-shadow(0 0 2px #ffffff24)!important}
+.dial .shade{background:rgba(5,7,19,.70)!important}
+/* B12: clear crystal with narrow polished edges, no frosted fill */
+.dial svg #segments{filter:drop-shadow(0 0 1.8px #ffffff22)!important}
+.dial svg{filter:none!important}
+.dial .shade{background:rgba(5,7,19,.70)!important}
+/* B18: clearer glass without crossbars; background remains optically sharp. */
+.dial svg #segments{filter:drop-shadow(0 0 2px #ffffff32)!important}
+.dial .shade{background:rgba(5,7,19,.70)!important}
+
+/* B19: unobstructed circle; compact glass controls in lower-right landscape. */
+@media (orientation:landscape) and (max-height:600px) {
+  main{padding:0!important;min-height:100dvh!important;overflow:hidden!important}
+  .layout{height:100dvh!important;width:100%!important;max-width:none!important;display:block!important}
+  .timerpanel{position:relative!important;height:100dvh!important;width:100%!important;padding:0!important;display:block!important;overflow:hidden!important}
+  .timerpanel>div:first-child{position:absolute!important;top:8px!important;left:12px!important;right:auto!important;width:calc(100% - 24px)!important;z-index:6!important}
+  .timerpanel .dial{position:absolute!important;left:clamp(8px,5vw,75px)!important;top:50%!important;transform:translateY(-50%)!important;margin:0!important;width:min(88dvh,58vw)!important;max-width:none!important}
+  .timerpanel .time{font-size:clamp(29px,11vh,72px)!important}
+  .timerpanel #status{position:absolute!important;top:36px!important;right:12px!important;left:auto!important;font-size:11px!important;z-index:5!important}
+  .timerpanel .controls{position:absolute!important;left:auto!important;right:12px!important;bottom:52px!important;top:auto!important;width:clamp(150px,28vw,240px)!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;padding:9px!important;border-radius:19px!important;background:rgba(22,15,34,.45)!important;border:1px solid rgba(255,255,255,.23)!important;backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important;z-index:8!important;box-shadow:0 8px 30px #0005!important}
+  .timerpanel .controls button{min-width:0!important;min-height:39px!important;font-size:12px!important;padding:7px 5px!important;white-space:normal!important;line-height:1.15!important}
+  .timerpanel .controls #play{grid-column:1 / -1!important;grid-row:1!important;font-size:15px!important;background:#ffc48d!important;color:#241827!important}
+  .timerpanel .controls #prev{grid-column:1!important;grid-row:2!important}
+  .timerpanel .controls #next{grid-column:2!important;grid-row:2!important}
+  .timerpanel .controls #reset{grid-column:1 / -1!important;grid-row:3!important;min-height:32px!important}
+  .timerpanel .controls:last-child{display:block!important;bottom:9px!important;padding:5px!important;background:rgba(22,15,34,.35)!important}
+  .timerpanel .controls:last-child button{width:100%!important;min-height:29px!important;font-size:11px!important}
+  .focus .timerpanel .dial{width:min(88dvh,58vw)!important}
+}
+@media (orientation:landscape) and (max-height:420px) {
+  .timerpanel .controls{bottom:42px!important;padding:6px!important;gap:4px!important;width:clamp(150px,27vw,210px)!important}
+  .timerpanel .controls button{min-height:34px!important;padding:4px!important;font-size:11px!important}
+  .timerpanel .controls #reset{min-height:27px!important}
+  .timerpanel .controls:last-child{bottom:5px!important}
+  .timerpanel .controls:last-child button{min-height:25px!important}
+  .timerpanel .dial{left:clamp(4px,4vw,55px)!important;width:min(86dvh,57vw)!important}
+}
+
+/* B20: cinematic landscape, clear central ring, nearly invisible lower-right controls. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .dial, .focus .timerpanel .dial {
+   left:40%!important; top:50%!important;
+   transform:translate(-50%,-50%)!important;
+   width:min(84dvh,49vw,490px)!important;
+ }
+ .timerpanel .controls {
+   left:auto!important;right:max(10px,env(safe-area-inset-right))!important;
+   bottom:max(12px,env(safe-area-inset-bottom))!important;
+   top:auto!important;
+   width:min(43vw,390px)!important;
+   display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
+   gap:5px!important;padding:0!important;
+   border:0!important;border-radius:0!important;
+   background:transparent!important;box-shadow:none!important;
+   backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+   z-index:8!important;
+ }
+ .timerpanel .controls button {
+   flex:1 1 0!important; min-width:0!important; min-height:38px!important;
+   padding:5px 3px!important;border-radius:15px!important;
+   background:rgba(17,16,29,.37)!important;
+   border:1px solid rgba(255,255,255,.16)!important;
+   color:rgba(255,255,255,.88)!important;
+   backdrop-filter:blur(3px)!important;-webkit-backdrop-filter:blur(3px)!important;
+   box-shadow:0 2px 8px #0002!important;
+   font-size:0!important;line-height:1!important;white-space:nowrap!important;
+ }
+ .timerpanel .controls button::after {font-size:19px!important;display:inline-block!important;line-height:1!important}
+ .timerpanel .controls #prev::after{content:'⏮'}
+ .timerpanel .controls #next::after{content:'⏭'}
+ .timerpanel .controls #reset::after{content:'↻'}
+ .timerpanel .controls #play {grid-column:auto!important;grid-row:auto!important;background:rgba(255,195,144,.31)!important;color:white!important}
+ .timerpanel .controls #play::after{content:'▶'}
+ .timerpanel .controls #play[data-running="true"]::after{content:'Ⅱ'}
+ .timerpanel .controls:last-child {
+   display:flex!important;right:max(10px,env(safe-area-inset-right))!important;
+   bottom:max(55px,calc(env(safe-area-inset-bottom) + 43px))!important;
+   width:48px!important;padding:0!important;
+ }
+ .timerpanel .controls:last-child button{min-height:30px!important;width:48px!important;flex:1!important;background:rgba(17,16,29,.24)!important}
+ .timerpanel .controls:last-child #finish::after{content:'⚑';font-size:16px!important}
+}
+@media (orientation:landscape) and (max-height:420px) {
+ .timerpanel .dial,.focus .timerpanel .dial{width:min(84dvh,49vw)!important}
+ .timerpanel .controls{width:min(42vw,360px)!important}
+ .timerpanel .controls button{min-height:34px!important}
+ .timerpanel .controls:last-child{bottom:max(51px,calc(env(safe-area-inset-bottom) + 39px))!important}
+}
+
+/* B21: larger centered dial; all five controls inside the viewport in one low-profile row. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .dial,.focus .timerpanel .dial {
+   left:38%!important;top:50%!important;
+   transform:translate(-50%,-50%)!important;
+   width:min(91dvh,56vw,550px)!important;
+ }
+ .timerpanel .controls:not(:last-child) {
+   position:absolute!important;
+   left:auto!important;right:calc(max(12px,env(safe-area-inset-right)) + 57px)!important;
+   bottom:max(11px,env(safe-area-inset-bottom))!important;
+   width:min(37vw,360px)!important;
+   display:flex!important;flex-wrap:nowrap!important;gap:5px!important;
+   padding:0!important;margin:0!important;background:transparent!important;
+   border:0!important;box-shadow:none!important;backdrop-filter:none!important;
+ }
+ .timerpanel .controls:not(:last-child) button {
+   min-width:0!important;flex:1 1 0!important;height:38px!important;min-height:38px!important;
+   padding:4px 2px!important;border-radius:13px!important;
+   background:rgba(18,15,26,.30)!important;color:white!important;
+   border:1px solid rgba(255,255,255,.18)!important;
+   font-size:0!important;backdrop-filter:blur(3px)!important;
+ }
+ .timerpanel .controls:not(:last-child) #play {background:rgba(255,196,141,.24)!important}
+ .timerpanel .controls:last-child {
+   display:block!important;position:absolute!important;
+   left:auto!important;right:max(12px,env(safe-area-inset-right))!important;
+   bottom:max(11px,env(safe-area-inset-bottom))!important;
+   width:52px!important;padding:0!important;margin:0!important;
+   background:transparent!important;border:0!important;box-shadow:none!important;
+ }
+ .timerpanel .controls:last-child #finish {
+   width:52px!important;height:38px!important;min-height:38px!important;
+   border-radius:13px!important;padding:0!important;
+   background:rgba(18,15,26,.30)!important;
+   border:1px solid rgba(255,255,255,.18)!important;
+   color:white!important;font-size:0!important;
+ }
+ .timerpanel .controls:last-child #finish::after{content:'⚑'!important;font-size:19px!important}
+ .timerpanel #status{right:12px!important;top:36px!important}
+}
+@media (orientation:landscape) and (max-height:420px) {
+ .timerpanel .dial,.focus .timerpanel .dial{width:min(91dvh,56vw)!important}
+ .timerpanel .controls:not(:last-child){width:min(37vw,360px)!important}
+}
+
+/* B22: balanced, low-contrast landscape controls. Keep B21 dial unchanged. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .controls:not(:last-child) {
+   position:absolute!important;top:auto!important;left:auto!important;
+   right:calc(max(16px, env(safe-area-inset-right)) + 48px)!important;
+   bottom:max(13px, env(safe-area-inset-bottom))!important;
+   width:min(29vw,310px)!important;
+   display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+   gap:5px!important;margin:0!important;padding:0!important;
+   background:none!important;border:0!important;box-shadow:none!important;
+   backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+   z-index:12!important;
+ }
+ .timerpanel .controls:not(:last-child) button,
+ .timerpanel .controls:last-child #finish {
+   display:flex!important;align-items:center!important;justify-content:center!important;
+   width:100%!important;min-width:0!important;height:36px!important;min-height:36px!important;
+   border-radius:12px!important;padding:0 2px!important;
+   background:rgba(18,16,28,.22)!important;
+   border:1px solid rgba(255,255,255,.23)!important;
+   color:rgba(255,255,255,.95)!important;
+   backdrop-filter:blur(2px)!important;-webkit-backdrop-filter:blur(2px)!important;
+   box-shadow:0 1px 5px rgba(0,0,0,.14)!important;
+   font-size:0!important;line-height:1!important;
+   opacity:1!important;visibility:visible!important;
+ }
+ .timerpanel .controls:not(:last-child) button:disabled {opacity:.48!important}
+ .timerpanel .controls:not(:last-child) #play {
+   grid-column:auto!important;grid-row:auto!important;
+   background:rgba(255,196,141,.17)!important;
+ }
+ .timerpanel .controls:not(:last-child) button::after,
+ .timerpanel .controls:last-child #finish::after {
+   display:block!important;font-size:17px!important;line-height:1!important;
+   color:rgba(255,255,255,.96)!important;
+ }
+ .timerpanel .controls:last-child {
+   display:block!important;position:absolute!important;top:auto!important;left:auto!important;
+   right:max(16px,env(safe-area-inset-right))!important;
+   bottom:max(13px,env(safe-area-inset-bottom))!important;
+   width:42px!important;height:36px!important;margin:0!important;padding:0!important;
+   background:none!important;border:0!important;box-shadow:none!important;
+   z-index:12!important;
+ }
+ .timerpanel .controls:last-child #finish::after {content:'⚑'!important;font-size:17px!important}
+}
+@media (orientation:landscape) and (max-height:420px) {
+ .timerpanel .controls:not(:last-child) {width:min(29vw,310px)!important}
+}
+
+/* B23: ONE physical transport container, five buttons, no wrap and no conflicting sibling positioning. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .controls.transport,
+ .timerpanel .controls.transport:last-child,
+ .timerpanel .controls.transport:not(:last-child) {
+   position:absolute!important;
+   display:flex!important;
+   flex-flow:row nowrap!important;
+   align-items:center!important;
+   justify-content:flex-end!important;
+   left:auto!important;
+   right:max(16px,env(safe-area-inset-right))!important;
+   top:auto!important;
+   bottom:max(12px,env(safe-area-inset-bottom))!important;
+   width:min(40vw,430px)!important;
+   height:38px!important;
+   padding:0!important;
+   margin:0!important;
+   gap:5px!important;
+   background:transparent!important;
+   border:0!important;
+   border-radius:0!important;
+   box-shadow:none!important;
+   backdrop-filter:none!important;
+   -webkit-backdrop-filter:none!important;
+   z-index:25!important;
+ }
+ .timerpanel .controls.transport button,
+ .timerpanel .controls.transport:last-child button,
+ .timerpanel .controls.transport #finish {
+   display:flex!important;
+   flex:1 1 0!important;
+   position:static!important;
+   align-items:center!important;
+   justify-content:center!important;
+   min-width:0!important;
+   width:auto!important;
+   max-width:none!important;
+   height:38px!important;
+   min-height:38px!important;
+   margin:0!important;
+   padding:0!important;
+   grid-column:auto!important;
+   grid-row:auto!important;
+   border-radius:11px!important;
+   background:rgba(18,16,28,.32)!important;
+   border:1px solid rgba(255,255,255,.25)!important;
+   box-shadow:none!important;
+   backdrop-filter:blur(3px)!important;
+   -webkit-backdrop-filter:blur(3px)!important;
+   color:white!important;
+   font-size:0!important;
+   white-space:nowrap!important;
+   line-height:1!important;
+   opacity:1!important;
+   visibility:visible!important;
+ }
+ .timerpanel .controls.transport #play{background:rgba(255,196,141,.23)!important}
+ .timerpanel .controls.transport button:disabled{opacity:.45!important}
+ .timerpanel .controls.transport button::after{
+   display:inline-block!important;
+   font-size:19px!important;
+   color:rgba(255,255,255,.96)!important;
+   line-height:1!important;
+ }
+ .timerpanel .controls.transport #prev::after{content:'⏮'!important}
+ .timerpanel .controls.transport #next::after{content:'⏭'!important}
+ .timerpanel .controls.transport #reset::after{content:'↻'!important}
+ .timerpanel .controls.transport #finish::after{content:'⚑'!important}
+ .timerpanel .controls.transport #play::after{content:'▶'!important}
+ .timerpanel .controls.transport #play[data-running="true"]::after{content:'Ⅱ'!important}
+}
+
+/* B24: slight left inset, clearer inactive icon, and one unambiguous play label. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .controls.transport {right:max(34px,calc(env(safe-area-inset-right) + 18px))!important;}
+ .timerpanel .controls.transport button:disabled {opacity:.72!important;}
+ .timerpanel .controls.transport #play {font-size:15px!important;font-weight:700!important;letter-spacing:0!important;white-space:nowrap!important;}
+ .timerpanel .controls.transport #play::before {content:'▶';display:inline-block;font-size:12px;margin-right:6px;}
+ .timerpanel .controls.transport #play[data-running="true"]::before {content:'Ⅱ';}
+ .timerpanel .controls.transport #play::after,
+ .timerpanel .controls.transport #play[data-running="true"]::after {content:none!important;display:none!important;}
+}
+
+/* B25: labeled transport buttons for previous and next, matching Play. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .controls.transport,
+ .timerpanel .controls.transport:last-child,
+ .timerpanel .controls.transport:not(:last-child) {
+   width:min(53vw,610px)!important;
+   right:max(28px,calc(env(safe-area-inset-right) + 16px))!important;
+   gap:6px!important;
+ }
+ .timerpanel .controls.transport #prev,
+ .timerpanel .controls.transport #next {
+   flex:1.35 1 0!important;
+   font-size:clamp(11px,1.2vw,15px)!important;
+   font-weight:650!important;
+   letter-spacing:-.02em!important;
+   padding:0 5px!important;
+   white-space:nowrap!important;
+ }
+ .timerpanel .controls.transport #play {flex:1.2 1 0!important;font-size:clamp(12px,1.2vw,15px)!important;}
+ .timerpanel .controls.transport #reset,
+ .timerpanel .controls.transport #finish {flex:.55 1 0!important;}
+ .timerpanel .controls.transport #prev::after,
+ .timerpanel .controls.transport #next::after {content:none!important;display:none!important;}
+ .timerpanel .controls.transport #prev::before,
+ .timerpanel .controls.transport #next::before {
+   display:inline-block!important;
+   font-size:clamp(12px,1.25vw,17px)!important;
+   margin-right:5px!important;
+   line-height:1!important;
+ }
+ .timerpanel .controls.transport #prev::before {content:'⏮'!important;}
+ .timerpanel .controls.transport #next::before {content:'⏭'!important;}
+}
+
+/* B26: text-only landscape controls, unified single row, clear of the dial. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .controls.transport,
+ .timerpanel .controls.transport:last-child,
+ .timerpanel .controls.transport:not(:last-child) {
+   width:min(47vw,690px)!important;
+   right:max(22px,calc(env(safe-area-inset-right) + 12px))!important;
+   gap:6px!important;
+   height:40px!important;
+ }
+ .timerpanel .controls.transport button {
+   font-size:clamp(11px,1.05vw,15px)!important;
+   font-weight:600!important;
+   letter-spacing:0!important;
+   white-space:nowrap!important;
+   min-height:40px!important;
+   height:40px!important;
+   padding:0 4px!important;
+   text-overflow:clip!important;
+ }
+ .timerpanel .controls.transport #prev,
+ .timerpanel .controls.transport #next {flex:1.35 1 0!important;}
+ .timerpanel .controls.transport #play {flex:1.1 1 0!important;}
+ .timerpanel .controls.transport #reset,
+ .timerpanel .controls.transport #finish {flex:1 1 0!important;font-size:0!important;}
+ .timerpanel .controls.transport button::before,
+ .timerpanel .controls.transport #play::before,
+ .timerpanel .controls.transport #play[data-running="true"]::before,
+ .timerpanel .controls.transport #prev::before,
+ .timerpanel .controls.transport #next::before {content:none!important;display:none!important;}
+ .timerpanel .controls.transport button::after,
+ .timerpanel .controls.transport #prev::after,
+ .timerpanel .controls.transport #next::after,
+ .timerpanel .controls.transport #play::after {content:none!important;display:none!important;}
+ .timerpanel .controls.transport #reset::after {content:'Återställ'!important;display:inline-block!important;font-size:clamp(11px,1.05vw,15px)!important;color:white!important;}
+ .timerpanel .controls.transport #finish::after {content:'Avsluta'!important;display:inline-block!important;font-size:clamp(11px,1.05vw,15px)!important;color:white!important;}
+ .timerpanel .controls.transport button:disabled {opacity:.62!important;}
+}
+
+/* B27: same quiet, text-only glass transport in portrait; two comfortable rows. */
+@media (orientation:portrait), (min-height:601px) {
+ .timerpanel .controls.transport {
+   position:relative!important;display:grid!important;
+   grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1.2fr)!important;
+   grid-template-rows:44px 42px!important;gap:8px!important;
+   width:min(100%,490px)!important;margin:12px auto 0!important;
+   padding:0!important;background:transparent!important;border:0!important;
+   box-shadow:none!important;backdrop-filter:none!important;
+ }
+ .timerpanel .controls.transport button {
+   position:static!important;display:flex!important;align-items:center!important;justify-content:center!important;
+   min-width:0!important;width:100%!important;height:100%!important;min-height:0!important;
+   padding:6px 5px!important;border-radius:13px!important;
+   background:rgba(20,17,31,.32)!important;border:1px solid rgba(255,255,255,.29)!important;
+   color:#fff!important;box-shadow:0 3px 12px rgba(0,0,0,.12)!important;
+   backdrop-filter:blur(4px)!important;-webkit-backdrop-filter:blur(4px)!important;
+   font-size:clamp(12px,3.5vw,15px)!important;font-weight:600!important;
+   line-height:1.1!important;white-space:nowrap!important;
+ }
+ .timerpanel .controls.transport #play {grid-column:2!important;grid-row:1!important;background:rgba(255,196,141,.23)!important}
+ .timerpanel .controls.transport #prev {grid-column:1!important;grid-row:1!important}
+ .timerpanel .controls.transport #next {grid-column:3!important;grid-row:1!important}
+ .timerpanel .controls.transport #reset {grid-column:1 / 3!important;grid-row:2!important}
+ .timerpanel .controls.transport #finish {grid-column:3!important;grid-row:2!important}
+ .timerpanel .controls.transport button:disabled {opacity:.48!important}
+ .timerpanel .controls.transport button::before,.timerpanel .controls.transport button::after {content:none!important;display:none!important}
+}
+
+/* B28: preserve dial position; shift landscape buttons clear of the ring. */
+@media (orientation:landscape) and (max-height:600px) {
+ .timerpanel .controls.transport,
+ .timerpanel .controls.transport:last-child,
+ .timerpanel .controls.transport:not(:last-child) {
+   width:min(42vw,650px)!important;
+   right:max(18px,calc(env(safe-area-inset-right) + 12px))!important;
+   gap:5px!important;
+ }
+ .timerpanel .controls.transport button {
+   font-size:clamp(10px,1.02vw,15px)!important;
+   padding:0 3px!important;
+ }
+ .timerpanel .controls.transport #prev,
+ .timerpanel .controls.transport #next {flex:1.35 1 0!important;}
+ .timerpanel .controls.transport #play {flex:1.05 1 0!important;}
+ .timerpanel .controls.transport #reset,
+ .timerpanel .controls.transport #finish {flex:.92 1 0!important;}
+ .timerpanel .controls.transport button:disabled {
+   opacity:.79!important;
+   color:rgba(255,255,255,.84)!important;
+   border-color:rgba(255,255,255,.20)!important;
+ }
+}
+
+/* B29: coordinated, compact two-row portrait glass transport. */
+@media (orientation:portrait), (min-height:601px) {
+ .timerpanel .controls.transport {
+   grid-template-columns:repeat(6,minmax(0,1fr))!important;
+   grid-template-rows:40px 40px!important;
+   gap:6px!important;
+   width:min(100%,490px)!important;
+   margin:10px auto 0!important;
+ }
+ .timerpanel .controls.transport button {
+   border-radius:12px!important;
+   padding:5px 4px!important;
+   font-size:clamp(12px,3.25vw,14px)!important;
+   font-weight:600!important;
+   letter-spacing:-.015em!important;
+   background:rgba(21,17,29,.27)!important;
+   border:1px solid rgba(255,255,255,.25)!important;
+   box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 3px 9px rgba(0,0,0,.13)!important;
+   backdrop-filter:blur(5px)!important;
+   -webkit-backdrop-filter:blur(5px)!important;
+ }
+ .timerpanel .controls.transport #prev{grid-column:1 / 3!important;grid-row:1!important}
+ .timerpanel .controls.transport #play{grid-column:3 / 5!important;grid-row:1!important;background:rgba(255,196,141,.24)!important}
+ .timerpanel .controls.transport #next{grid-column:5 / 7!important;grid-row:1!important}
+ .timerpanel .controls.transport #reset{grid-column:1 / 4!important;grid-row:2!important}
+ .timerpanel .controls.transport #finish{grid-column:4 / 7!important;grid-row:2!important}
+ .timerpanel .controls.transport button:disabled{opacity:.58!important;color:rgba(255,255,255,.80)!important}
+}
+
+.profileBox{padding:12px;margin:0 0 15px;border:1px solid #ffffff35;border-radius:17px;background:#191523b8;display:grid;gap:9px}
+.profileBox label,.endSettings label{font-size:13px;color:#f4e6dc}
+.profileBox select,.profileBox input,.endSettings input,.endSettings select,.endSettings textarea{width:100%;padding:10px;border-radius:10px;background:#231e30;color:#fff;border:1px solid #ffffff55;font:inherit}
+.profileActions{display:flex;flex-wrap:wrap;gap:6px}.profileActions button{font-size:12px;padding:9px 11px}
+.endSettings{margin-top:12px;border:1px solid #ffffff35;border-radius:14px;padding:12px;background:#1c1624a8;display:grid;gap:10px}
+.endSettings .field{display:grid;gap:4px}.endSettings textarea{min-height:62px;resize:vertical}
+.endSettings .controls{display:flex;flex-wrap:wrap}.endSettings button{font-size:13px}
+.endOverlay{position:fixed;z-index:25;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;text-align:center;padding:22px;background:radial-gradient(ellipse at center,#0d092055,transparent 70%)}
+.endOverlay.hidden{display:none}.endCard{max-width:90vw;padding:25px 30px;border-radius:22px;background:#1b1525bb;border:1px solid #ffffff77;box-shadow:0 0 45px #ffc58d55;backdrop-filter:blur(5px)}
+.endMessage{font-size:clamp(25px,5vw,58px);font-weight:700;white-space:pre-wrap;text-shadow:0 3px 14px #000}.endOverlay.glow .endMessage{animation:softGlow 2s ease-in-out infinite alternate}.endOverlay.stars .endCard{box-shadow:0 0 30px #d3c6ff,0 0 80px #a8d8ff55}.endOverlay.fade .endCard{animation:fadeUp 1.2s ease-out}
+@keyframes softGlow{to{text-shadow:0 0 24px #ffe2a7,0 0 48px #fff6e3}}@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.endPreviewClose{pointer-events:auto;margin-top:16px;padding:9px 18px}
+@media (max-width:800px){.profileBox{padding:10px}.endSettings{padding:10px}}
+</style></head><body><main id="app"><div class="back" id="back"></div><div class="layout"><aside class="panel sidebar"><div class="header">🎹 Pianolektion <span style="font-size:11px;opacity:.65;font-weight:400">B30</span></div><div class="profileBox"><label for="profileSelect"><strong>Elev / lektionsupplägg</strong></label><select id="profileSelect" aria-label="Välj elev"></select><div class="profileActions"><button id="newProfile">＋ Ny</button><button id="copyProfile">⧉ Kopiera</button><button id="renameProfile">✎ Byt namn</button><button id="removeProfile">Ta bort</button></div><div class="small" id="profileInfo">Upplägget sparas på den här enheten.</div></div><strong>Lektionsmoment</strong><div class="parts" id="parts"></div><div class="controls" style="justify-content:flex-start"><button id="sound">🔔 Ljud på</button><button id="fx">🎆 Fyrverkerier på</button><button id="edit">✎ Redigera</button><button id="add">＋ Moment</button><button id="photo">🖼 Byt bild</button><input type="file" id="photoInput" accept="image/*" hidden></div><div id="editor" class="hidden"><div class="field"><label>Namn</label><input id="ename"></div><div class="field"><label>Minuter</label><input type="number" id="emin" min="1" max="180"></div><div class="field"><label>Färg</label><input type="color" id="ecolor"></div><div class="controls"><button id="save">Spara</button><button id="delete">Ta bort</button></div><div class="endSettings"><strong>✨ Lektionens avslutning</strong><div class="field"><label for="defaultMessage">Standardtext</label><textarea id="defaultMessage" rows="2" placeholder="Bra jobbat idag! 🎹"></textarea></div><div class="field"><label for="defaultEffect">Standardeffekt</label><select id="defaultEffect"><option value="fireworks">Fyrverkerier</option><option value="stars">Glittrande stjärnor</option><option value="glow">Mjukt ljus</option><option value="fade">Tona fram</option><option value="none">Ingen effekt</option></select></div><label><input type="checkbox" id="customEnd" style="width:auto"> Egen avslutning för vald elev</label><div id="customFields" class="hidden"><div class="field"><label for="customMessage">Elevens avslutningstext</label><textarea id="customMessage" rows="2"></textarea></div><div class="field"><label for="customEffect">Elevens effekt</label><select id="customEffect"><option value="fireworks">Fyrverkerier</option><option value="stars">Glittrande stjärnor</option><option value="glow">Mjukt ljus</option><option value="fade">Tona fram</option><option value="none">Ingen effekt</option></select></div></div><div class="controls"><button id="saveEnd">Spara avslutning</button><button id="previewEnd">▶ Förhandsvisa</button></div></div></div></aside><section class="panel timerpanel" style="text-align:center"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong id="name">Uppvärmning</strong><button id="focus">⛶ Fokus</button></div><div class="dial"><div class="shade" id="shade"></div><svg viewBox="0 0 240 240"><defs id="glassDefs"></defs><g id="segments"></g></svg><div class="numbers"><div class="small" id="subtitle">TID KVAR</div><div class="time" id="time">05:00</div><div class="small" id="percent">0 % avslöjat</div></div></div><p class="small" id="status">Moment 1 av 5</p><div class="controls transport"><button id="prev" aria-label="Föregående">Föregående</button><button class="primary" id="play" aria-label="Starta eller pausa">Starta</button><button id="next" aria-label="Nästa">Nästa</button><button id="reset" aria-label="Återställ">Återställ</button><button id="finish" aria-label="Avsluta lektionen">Avsluta</button></div></section></div><div id="fire" class="fire"></div><div id="endOverlay" class="endOverlay hidden" role="status"><div class="endCard"><div id="endMessage" class="endMessage"></div><button id="endPreviewClose" class="endPreviewClose hidden">Stäng förhandsvisning</button></div></div></main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id),root=$('app');let parts=[{name:'Uppvärmning',min:5,color:'#ffc48d'},{name:'Teknik',min:7,color:'#5ed8c7'},{name:'Repertoar',min:10,color:'#bca6f6'},{name:'Ackord & samspel',min:5,color:'#ed92c5'},{name:'Avslutning',min:3,color:'#80bff3'}];const baseParts=()=>parts.map(p=>({...p}));let profiles=[],activeId='',defaultEnd={message:'Bra jobbat idag! 🎹',effect:'fireworks'};
+try{const saved=JSON.parse(localStorage.getItem('piano-b30-data'));if(saved&&Array.isArray(saved.profiles)&&saved.profiles.length){profiles=saved.profiles.filter(p=>p&&Array.isArray(p.parts)&&p.parts.length).map(p=>({...p,parts:p.parts.map(x=>({...x,min:Math.max(1,Number(x.min)||1)}))}));activeId=saved.activeId;defaultEnd={...defaultEnd,...saved.defaultEnd}}}catch{}
+if(!profiles.length){try{const old=JSON.parse(localStorage.getItem('piano-parts'));if(Array.isArray(old)&&old.length)parts=old}catch{}profiles=[{id:'standard',name:'Standardlektion',parts:baseParts(),end:null}];activeId='standard'}
+if(!profiles.some(p=>p.id===activeId))activeId=profiles[0].id;
+const currentProfile=()=>profiles.find(p=>p.id===activeId)||profiles[0];parts=currentProfile().parts.map(p=>({...p}));
+function saveAll(){currentProfile().parts=parts.map(p=>({...p}));try{localStorage.setItem('piano-b30-data',JSON.stringify({profiles,activeId,defaultEnd}))}catch{alert('Det gick inte att spara. Kontrollera lagringsutrymmet.')}}
+function updateProfileList(){const select=$('profileSelect');select.replaceChildren();profiles.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.name;select.append(o)});select.value=activeId;$('removeProfile').disabled=profiles.length===1;$('profileInfo').textContent=`${parts.length} moment · ${Math.round(parts.reduce((n,p)=>n+p.min,0))} minuter · sparas på den här enheten`}
+function loadEndSettings(){$('defaultMessage').value=defaultEnd.message;$('defaultEffect').value=defaultEnd.effect;const custom=currentProfile().end;$('customEnd').checked=!!custom;$('customFields').classList.toggle('hidden',!custom);$('customMessage').value=custom?.message||defaultEnd.message;$('customEffect').value=custom?.effect||defaultEnd.effect}
+function saveEndSettings(){defaultEnd={message:$('defaultMessage').value.trim()||'Bra jobbat idag! 🎹',effect:$('defaultEffect').value};currentProfile().end=$('customEnd').checked?{message:$('customMessage').value.trim()||defaultEnd.message,effect:$('customEffect').value}:null;saveAll()}
+function changeProfile(id){if(!profiles.some(p=>p.id===id))return;saveAll();stop();done=false;hideEnd();activeId=id;parts=currentProfile().parts.map(p=>({...p}));idx=0;left=parts[0].min*60;saveAll();updateProfileList();loadEndSettings();draw();sync()}
+function uniqueId(){return 'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function hideEnd(){$('endOverlay').className='endOverlay hidden';$('endPreviewClose').classList.add('hidden')}
+function showEnd(preview=false){const end=currentProfile().end||defaultEnd;$('endMessage').textContent=end.message;$('endOverlay').className='endOverlay '+(end.effect==='none'?'':end.effect);$('endPreviewClose').classList.toggle('hidden',!preview);if(end.effect==='fireworks')fire();if(end.effect==='stars'){const holder=$('fire');holder.replaceChildren();for(let i=0;i<80;i++){const e=document.createElement('span');e.className='spark';for(const [k,v] of Object.entries({'--x':Math.random()*100+'%','--y':Math.random()*100+'%','--dx':(Math.random()-.5)*65+'px','--dy':(Math.random()-.5)*65+'px','--c':['#fff2bd','#b7eaff','#f8b8f1'][i%3],'--delay':Math.random()*1.5+'s'}))e.style.setProperty(k,v);holder.append(e)}setTimeout(()=>holder.replaceChildren(),4600)}}
+let idx=0,left=parts[0].min*60,run=false,done=false,deadline=0,ticker=null,sound=true,fx=true,audio;const total=()=>parts.reduce((s,p)=>s+p.min*60,0),prior=()=>parts.slice(0,idx).reduce((s,p)=>s+p.min*60,0),fmt=n=>{n=Math.max(0,Math.ceil(n));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')};function persist(){saveAll();updateProfileList()}function draw(){const p=parts[idx],ratio=done?1:Math.max(0,Math.min(1,(prior()+p.min*60-left)/total()));root.style.setProperty('--accent',p.color);$('shade').style.setProperty('--angle',ratio*360+'deg');document.querySelector('.dial').style.setProperty('--angle-num',String(ratio*360));$('name').textContent=done?'Bra jobbat! 🎉':p.name;$('subtitle').textContent=done?'LEKTIONEN ÄR KLAR':'TID KVAR';$('time').textContent=fmt(done?0:left);$('percent').textContent=done?'🎆 Lektionen avslutad':Math.round(ratio*100)+' % avslöjat';$('status').textContent=done?'Alla moment är klara':`Moment ${idx+1} av ${parts.length} · ${Math.round(total()/60)} min totalt`;$('play').textContent=done?'Börja om':run?'Pausa':'Starta';$('prev').disabled=!done&&idx===0;$('next').disabled=done;const g=$('segments');g.replaceChildren();const defs=$('glassDefs');defs.replaceChildren();let offset=0,C=2*Math.PI*110;const ns='http://www.w3.org/2000/svg';parts.forEach((part,n)=>{const share=part.min*60/total(),length=Math.max(0,share*C-5.5);const base={cx:120,cy:120,fill:'none','stroke-linecap':'butt','stroke-dasharray':`${length} ${C}`,'stroke-dashoffset':-offset*C};function line(radius,width,color,opacity,extra={}){const el=document.createElementNS(ns,'circle');Object.entries({...base,r:radius,stroke:color,'stroke-width':width,'stroke-opacity':opacity,...extra}).forEach(([k,v])=>el.setAttribute(k,v));g.append(el)}const grad=document.createElementNS(ns,'linearGradient');grad.id='crystal'+n;
+grad.setAttribute('x1','0%');grad.setAttribute('y1','0%');grad.setAttribute('x2','100%');grad.setAttribute('y2','100%');
+[['0%',part.color,'.65'],['18%',part.color,'.43'],['36%','#ffffff','.075'],['52%',part.color,'.51'],['75%',part.color,'.34'],['100%',part.color,'.60']].forEach(([at,color,opacity])=>{const stop=document.createElementNS(ns,'stop');stop.setAttribute('offset',at);stop.setAttribute('stop-color',color);stop.setAttribute('stop-opacity',opacity);grad.append(stop)});defs.append(grad);
+// B17: B15-style wide, optically clear glass arcs. Photo remains sharp beneath.
+line(110,23,'url(#crystal'+n+')',1);
+line(98.4,1.0,part.color,.67);line(121.6,1.0,part.color,.61);
+line(98.8,.58,'#ffffff',.58);line(121.2,.58,'#ffffff',.47);
+line(101.0,1.2,'#ffffff',.10);line(119.0,1.1,'#ffffff',.08);
+// Short, polished specular highlights rather than a continuous white outline.
+line(99.1,1.2,'#ffffff',.66,{...base,'stroke-dasharray':`${Math.min(length*.28,36)} ${C}`,'stroke-dashoffset':-(offset*C+length*.08)});
+line(120.8,1.1,'#ffffff',.60,{...base,'stroke-dasharray':`${Math.min(length*.20,26)} ${C}`,'stroke-dashoffset':-(offset*C+length*.65)});
+// B18: no radial white crossbars; segment gaps alone mark transitions.
+offset+=share});const list=$('parts');list.replaceChildren();parts.forEach((p,i)=>{const b=document.createElement('button');b.className='part'+(idx===i&&!done?' active':'');const dot=document.createElement('span');dot.className='dot';dot.style.background=p.color;const t=document.createElement('span');const title=document.createElement('strong');title.textContent=p.name;const sub=document.createElement('span');sub.className='small';sub.textContent=p.min+' minuter';t.append(title,sub);b.append(dot,t);b.onclick=()=>jump(i);list.append(b)})}function stop(){run=false;if(ticker)clearInterval(ticker);ticker=null}function beep(){if(!sound)return;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;audio=audio||new A();audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.connect(g);g.connect(audio.destination);o.frequency.value=880;g.gain.setValueAtTime(.07,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.25);o.start();o.stop(audio.currentTime+.25)}catch{}}function fire(){if(!fx)return;const holder=$('fire');holder.replaceChildren();const colors=parts.map(p=>p.color);for(let b=0;b<7;b++){let x=12+Math.random()*76,y=10+Math.random()*60;for(let i=0;i<24;i++){const el=document.createElement('span');el.className='spark';const angle=i*Math.PI/12,r=50+Math.random()*110;for(const [k,v] of Object.entries({'--x':x+'%','--y':y+'%','--dx':Math.cos(angle)*r+'px','--dy':Math.sin(angle)*r+'px','--c':colors[(i+b)%colors.length],'--delay':b*.33+'s'}))el.style.setProperty(k,v);holder.append(el)}}setTimeout(()=>holder.replaceChildren(),4600)}function finish(){stop();done=true;left=0;draw();beep();showEnd(false)}function jump(i){const was=run;stop();done=false;hideEnd();$('fire').replaceChildren();idx=i;left=parts[i].min*60;if(was){run=true;deadline=Date.now()+left*1000;ticker=setInterval(tick,250)}draw();sync()}function tick(){if(!run)return;const now=Date.now();while(run&&now>=deadline){beep();if(idx===parts.length-1){finish();return}idx++;deadline+=parts[idx].min*60000}left=Math.max(0,Math.ceil((deadline-now)/1000));draw()}$('play').onclick=()=>{if(done){jump(0);return}if(run){left=Math.max(0,Math.ceil((deadline-Date.now())/1000));stop()}else{run=true;deadline=Date.now()+left*1000;ticker=setInterval(tick,250)}draw()};$('next').onclick=()=>idx===parts.length-1?finish():jump(idx+1);$('prev').onclick=()=>done?jump(parts.length-1):idx>0&&jump(idx-1);$('finish').onclick=finish;$('reset').onclick=()=>{stop();done=false;hideEnd();left=parts[idx].min*60;draw()};$('focus').onclick=()=>{root.classList.toggle('focus');$('focus').textContent=root.classList.contains('focus')?'✕ Avsluta fokus':'⛶ Fokus'};$('sound').onclick=()=>{sound=!sound;$('sound').textContent=sound?'🔔 Ljud på':'🔕 Ljud av'};$('fx').onclick=()=>{fx=!fx;$('fx').textContent=fx?'🎆 Fyrverkerier på':'🎆 Fyrverkerier av'};function sync(){const p=parts[idx];$('ename').value=p.name;$('emin').value=p.min;$('ecolor').value=p.color;$('delete').disabled=parts.length===1}$('edit').onclick=()=>{$('editor').classList.toggle('hidden');sync()};$('save').onclick=()=>{stop();done=false;const min=Math.max(1,Math.min(180,Math.round(Number($('emin').value)||1)));parts[idx]={name:$('ename').value.trim()||'Moment',min,color:$('ecolor').value};left=min*60;persist();draw()};$('add').onclick=()=>{stop();done=false;parts.push({name:'Nytt moment',min:5,color:'#baa2f5'});idx=parts.length-1;left=300;$('editor').classList.remove('hidden');persist();draw();sync()};$('delete').onclick=()=>{if(parts.length<2)return;stop();done=false;parts.splice(idx,1);idx=Math.min(idx,parts.length-1);left=parts[idx].min*60;persist();draw();sync()};$('photo').onclick=()=>$('photoInput').click();$('photoInput').onchange=e=>{const file=e.target.files?.[0];if(!file)return;const url=URL.createObjectURL(file);$('back').style.backgroundImage=`url("${url}")`;document.querySelector('.dial').style.setProperty('--custom-photo',`url("${url}")`)};$('profileSelect').onchange=()=>changeProfile($('profileSelect').value);
+$('newProfile').onclick=()=>{const name=prompt('Namn på elev eller lektionsupplägg:','Ny elev');if(!name?.trim())return;saveAll();const p={id:uniqueId(),name:name.trim(),parts:baseParts(),end:null};profiles.push(p);activeId=p.id;parts=p.parts.map(x=>({...x}));stop();done=false;hideEnd();idx=0;left=parts[0].min*60;saveAll();updateProfileList();loadEndSettings();draw();sync()};
+$('copyProfile').onclick=()=>{const name=prompt('Namn på kopian:',currentProfile().name+' – kopia');if(!name?.trim())return;saveAll();const p={id:uniqueId(),name:name.trim(),parts:baseParts(),end:currentProfile().end?{...currentProfile().end}:null};profiles.push(p);activeId=p.id;parts=p.parts.map(x=>({...x}));stop();done=false;hideEnd();idx=0;left=parts[0].min*60;saveAll();updateProfileList();loadEndSettings();draw();sync()};
+$('renameProfile').onclick=()=>{const name=prompt('Nytt namn:',currentProfile().name);if(!name?.trim())return;currentProfile().name=name.trim();saveAll();updateProfileList()};
+$('removeProfile').onclick=()=>{if(profiles.length<2||!confirm('Ta bort '+currentProfile().name+'?'))return;profiles=profiles.filter(p=>p.id!==activeId);activeId=profiles[0].id;parts=currentProfile().parts.map(x=>({...x}));stop();done=false;hideEnd();idx=0;left=parts[0].min*60;saveAll();updateProfileList();loadEndSettings();draw();sync()};
+$('customEnd').onchange=()=>{$('customFields').classList.toggle('hidden',!$('customEnd').checked)};
+$('saveEnd').onclick=()=>{saveEndSettings();alert('Avslutningen är sparad!')};
+$('previewEnd').onclick=()=>{saveEndSettings();showEnd(true)};
+$('endPreviewClose').onclick=()=>{hideEnd();$('fire').replaceChildren()};
+$('fx').onclick=()=>{fx=!fx;$('fx').textContent=fx?'🎆 Fyrverkerier på':'🎆 Fyrverkerier av'};
+updateProfileList();loadEndSettings();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&run)tick()});draw();new MutationObserver(()=>{$('play').dataset.running=$('play').textContent.includes('Pausa')?'true':'false'}).observe($('play'),{childList:true,characterData:true,subtree:true})})();
+</script></body></html>
